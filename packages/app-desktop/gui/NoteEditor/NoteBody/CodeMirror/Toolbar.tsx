@@ -4,14 +4,14 @@ import ToolbarBase from '../../../ToolbarBase';
 import { utils as pluginUtils } from '@joplin/lib/services/plugins/reducer';
 import { connect } from 'react-redux';
 import { AppState } from '../../../../app.reducer';
-import ToolbarButtonUtils, { ToolbarButtonInfo } from '@joplin/lib/services/commands/ToolbarButtonUtils';
+import ToolbarButtonUtils, { ToolbarItem } from '@joplin/lib/services/commands/ToolbarButtonUtils';
 import stateToWhenClauseContext from '../../../../services/commands/stateToWhenClauseContext';
 import { _ } from '@joplin/lib/locale';
 const { buildStyle } = require('@joplin/lib/theme');
 
 interface ToolbarProps {
 	themeId: number;
-	toolbarButtonInfos: ToolbarButtonInfo[];
+	toolbarButtonInfos: ToolbarItem[];
 	disabled?: boolean;
 }
 
@@ -33,6 +33,7 @@ function Toolbar(props: ToolbarProps) {
 	return (
 		<ToolbarBase
 			style={styles.root}
+			scrollable={true}
 			items={props.toolbarButtonInfos}
 			disabled={!!props.disabled}
 			aria-label={_('Editor actions')}
@@ -40,8 +41,12 @@ function Toolbar(props: ToolbarProps) {
 	);
 }
 
-const mapStateToProps = (state: AppState) => {
-	const whenClauseContext = stateToWhenClauseContext(state);
+interface ConnectProps {
+	windowId: string;
+}
+
+const mapStateToProps = (state: AppState, connectProps: ConnectProps) => {
+	const whenClauseContext = stateToWhenClauseContext(state, { windowId: connectProps.windowId });
 
 	const commandNames = [
 		'historyBackward',
